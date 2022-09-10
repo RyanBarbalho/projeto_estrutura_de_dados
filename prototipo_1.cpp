@@ -6,7 +6,7 @@ int  main()
 {
     int x;
 
-    printf("bem vindo ao gerador de avores filogenetica\ndigite o que deseja fazer:\n");
+    printf("bem vindo ao gerador de arvores filogenetica\ndigite o que deseja fazer:\n");
     printf("1 - Adicionar caracteristicas\n");
     printf("2 - Adicionar especie\n");
     printf("3 - imprimir Arvore\n");

@@ -9,19 +9,13 @@ typedef struct Arvore
     struct Arvore *direita; 
 }Arvore;
 
-void imprimir(Arvore *raiz){
-    if(raiz){
-        printf("\n%s", raiz->elem);
-        imprimir(raiz->esquerda);
-        imprimir(raiz->direita);
-    }
-}
-
 int funcao_comparacao(int j, int k, char *array[][10],int semelhanca, int tam)
 {
     for(int i=0; i<tam; i++){
 
-        if(array[i][j] == array[i][k]){ semelhanca++;}
+        if(array[i][j] == array[i][k]){
+            
+            semelhanca++;}
     }
     return semelhanca;
 }
@@ -30,27 +24,40 @@ int funcao_comparacao(int j, int k, char *array[][10],int semelhanca, int tam)
 void inserir(Arvore **raiz, int i, int j, int k, char animal[], char *matriz_car[][10]){
     if (*raiz == NULL){
         *raiz = malloc (sizeof (Arvore)); 
-        strcpy((*raiz)->Arvore.elem, animal[i]);
-        k= i;
+        strcpy((*raiz)->elem, &animal[i]);
+        k = i;
+        printf("%d", k);
         (*raiz)->esquerda = NULL;
         (*raiz)->direita = NULL;
        
     } else {
         int semelhanca;
+        i++;
         semelhanca = funcao_comparacao(j, k, matriz_car, 0, 4);
+        printf("%d", semelhanca);
         if (semelhanca <= 2){
+            printf("animal esta a esquerda");
             inserir(&((*raiz)->esquerda), i, j, k, animal, matriz_car);
-        } else{
+        } else if(semelhanca > 2) {
+            printf("animal esta a direita");
             inserir(&((*raiz)->direita), i, j, k, animal, matriz_car);
-        }
+        } printf("\n\n k=%d", k);
+    }
+}
+void imprimir(Arvore *raiz){
+    if(raiz){
+        printf("\n%s\n", raiz->elem);
+        imprimir(raiz->esquerda);
+        imprimir(raiz->direita);
     }
 }
 
 
 int main(){
     Arvore *raiz = NULL;
-    int op, i, j;
+    int op, i, j, k;
     i = 0;
+    k = 0;
     char matriz_ani[10], *matriz_car[4][10];
     printf("\nadcione o Animal ancestral:\n");
     scanf("%s", &matriz_ani[i]);
@@ -59,14 +66,14 @@ int main(){
     for (j = 0; j < 4; j++){
         char array_car[10];
         scanf("%s", array_car);
-        matriz_car[j][0] = array_car;
+        matriz_car[j][k] = array_car;
         
     }
     inserir(&raiz, 0, 0, 0, matriz_ani, matriz_car);
     
 
-    while(op != 0){
-        printf("para sair digite 0\npara adcionar animais digite 1\n");
+    while(op != 0 || i < 10){
+        printf("para sair digite 0\npara adcionar animais digite 1\npara imprimir a arvore digite 2:\n");
         scanf("%d", &op);
         switch(op){
 
@@ -84,16 +91,19 @@ int main(){
                 scanf("%s", array_car);
                 matriz_car[j][0] = array_car;
             }
-            //inserir recursivamente os animais na Arvore usando o animal anterior 
+            inserir(&raiz, i, j, k, matriz_ani, matriz_car);
+
+            case 2:
+
+            imprimir(raiz);
+            break;
 
         }
 
 
+        
     }
 
 
-    // apos o loop while inserir a funcao de imprimir a arvore
-    imprimir(//******//);
 
-    
 }

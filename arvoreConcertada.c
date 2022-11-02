@@ -80,7 +80,7 @@ node *insertRoot(node *root, char name[]){
         return NULL;
 }
 
-// tirar o father char ->> tiramo                     //agora nao sabemos se da pra fazer isso aqui de declarar o array de struct nessa funçao, vamo ve
+// tirar o father char ->> tiramo                  
 node *insert(node *root, char sonchar[][15], char name[]){
 
     if (root == NULL){
@@ -90,21 +90,17 @@ node *insert(node *root, char sonchar[][15], char name[]){
         strcpy(root->data, name);
         root -> left = NULL;
         root -> right = NULL;
-        //debug
-        printf("\n%s\n", root->data);
-
+        
         root -> count = ind;
         ind++;
         
     }
     else{
-        //aqui vamos verificar a semelhança dele        /size v/
-        //struct vai estar sendo chamado 
         //father char = node atual =>>>  animal[counter].charac[i]
         //index vai ser do node atual
-        int index_ = root->count;
+        int index_ = root->count; // index é a localizaçao do node
         char fatherchar[4][15];
-        for(int i = 0; i < 4 ; i++){   //counter = animal anterior
+        for(int i = 0; i < 4 ; i++){   
             strcpy(fatherchar[i], animal[index_].charac[i]);
         }
 
@@ -116,13 +112,11 @@ node *insert(node *root, char sonchar[][15], char name[]){
             
         }
         else if(resemblance<=2){
-             //debugzin
-            printf("\n%s vai a esquerda\n", name);
+              
             root->left = insert(root->left, sonchar, name);
         }
         else if(resemblance>2){
-                    //debug
-            printf("\n%s vai a direita\n", name);
+                    
             root->right = insert(root->right, sonchar, name);
         }
 
@@ -181,20 +175,15 @@ nodeRow *removeRow(row *roow){
     }
 }
 
-void searchLoop(row *roow, char lookNode[], node *root){
+int searchLoop(row *roow, char lookNode[], node *root){
     node *aux;
     //verifica se a lista ta vazia
     if(roow -> first == NULL){
-        printf("\n\tno nao encontrado ;=;\n\t");
-        
-        return;
+        return 0;
     }
     //se o primeiro elemento da lista for igual a o elemento procurado
-    else if(strcmp(roow->first->nameInRow, lookNode) == 0){
-        printf("\n\tno encotrado\n\t");
-        printf("\t\n%s", roow->first->nameInRow);
-        
-        return;
+    else if(strcmp(roow->first->nameInRow, lookNode) == 0){         
+        return 1;
     }
     //remove o primeiro elemento
     removeRow(roow);
@@ -202,8 +191,10 @@ void searchLoop(row *roow, char lookNode[], node *root){
     if(root->left != NULL){
         aux = root->left;
         insertRow(roow, aux->data);
+
         searchLoop(roow, lookNode, root->left);
-    }else if(root->right != NULL){
+    }
+    if(root->right != NULL){
         aux = root->right;
         insertRow(roow, aux->data);
         searchLoop(roow, lookNode, root->right);
@@ -211,7 +202,7 @@ void searchLoop(row *roow, char lookNode[], node *root){
     searchLoop(roow, lookNode, root);
 }
 
-row *search(node *root, char lookNode[]) {
+int search(node *root, char lookNode[]) {
     //primeiro cria uma lista vazia
     row roow;
     createRow(&roow);
@@ -224,16 +215,12 @@ row *search(node *root, char lookNode[]) {
 int main()
 {   
     node *root = NULL;
-    //pode ser setada a quantidade de animais a serem adicionados, por hora vamos definir 4
-    // as caracteristicas ja foram limitadas como 4
-    //contador de pai
-
-
+    
     //primeiro animal
-    strcpy(animal[0].name, "maceico");
+    strcpy(animal[0].name, "animal_1");
 
     //caracteristicas do maceico
-    char caracteristicas[][15] = {"pelo", "cauda", "antenas", "asas"};
+    char caracteristicas[][15] = {"a1", "a2", "b3", "a4"};
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[0].charac[i], caracteristicas[i]);
     }
@@ -243,9 +230,9 @@ int main()
     printTree(root);
     //nome filho
 
-    strcpy(animal[1].name,"abe");
+    strcpy(animal[1].name,"animal_2");
 
-    char caracteristics[][15] = {"caca", "as", "antenas", "te"};
+    char caracteristics[][15] = {"a1", "b2", "b3", "b4"};
     //caracterisitcas filho
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[1].charac[i], caracteristics[i]);
@@ -260,9 +247,9 @@ int main()
     root = insert(root, animal[1].charac, animal[1].name );
     printf("\n");
     printTree(root);
-    strcpy(animal[2].name,"broglas");
+    strcpy(animal[2].name,"animal_3");
 
-    char caracteristicos[][15] = {"gorgs", "cauda", "antenas", "asas"};
+    char caracteristicos[][15] = {"a1", "b2", "c3", "b4"};
     //caracterisitcas filho
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[2].charac[i], caracteristicos[i]);
@@ -270,33 +257,32 @@ int main()
     root = insert(root, animal[2].charac, animal[2].name);
     printTree(root);
 
-    strcpy(animal[3].name,"gralios");
+    strcpy(animal[3].name,"animal_4");
 
-    char caracteristicis[][15] = {"gorgs", "blindros", "antenas", "te"};
+    char caracteristicis[][15] = {"a1", "c2", "c3", "b4"};
     //caracterisitcas filho
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[3].charac[i], caracteristicis[i]);
     }
     root = insert(root, animal[3].charac, animal[3].name);
 
-    printTree(root);
+   
+    strcpy(animal[4].name,"animal_5");
 
-    strcpy(animal[4].name,"thrall");
-
-    char caracteristices[][15] = {"caca", "blindros", "antenas", "te"};
+    char caracteristices[][15] = {"a1", "a2", "b3", "b4"};
     //caracterisitcas filho
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[4].charac[i], caracteristices[i]);
     }
     root = insert(root, animal[4].charac, animal[4].name);
     printf("\n");
-    printTree(root);
 
 
 
-    strcpy(animal[5].name,"baine");
 
-    char caracteristiczs[][15] = {"caca", "blindros", "antenas", "gorck"};
+    strcpy(animal[5].name,"animal_6");
+
+    char caracteristiczs[][15] = {"a1", "c2", "c3", "c4"};
     //caracterisitcas filho
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[5].charac[i], caracteristices[i]);
@@ -305,14 +291,16 @@ int main()
     printf("\n");
     printTree(root);
     printf("\n");
-    printf("agora procurar \n");
-    int size;
-    size = sizetree(root, 0);
+
+    
     search(root, "Teste");
     printf("\n");
-    search(root, "broglas");
-    printf("\n");
-    printTree(root);
-
+    int procura = search(root, "animal_4");
+    if (procura == 1)printf("node found\n");
+    else printf("node not found\n");
+    procura = search(root, "animal_8");
+    if (procura == 1)printf("node found\n");
+    else printf("node not found\n");
+   
 
 }

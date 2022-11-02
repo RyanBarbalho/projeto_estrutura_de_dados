@@ -202,47 +202,45 @@ int searchLoop(row *roow, char lookNode[], node *root){
     searchLoop(roow, lookNode, root);
 }
 
-int search(node *root, char lookNode[]) {
+void search(node *root, char lookNode[]) {
     //primeiro cria uma lista vazia
     row roow;
+    int procura;
     createRow(&roow);
     //insere a raiz da arvore na lista
     insertRow(&roow, root->data);
     //chama a funçao recurisva que vai comparar
-    searchLoop(&roow, lookNode, root);
+    procura = searchLoop(&roow, lookNode, root);
+
+    if (procura == 1)printf("node found\n");
+    else printf("node not found\n");
 }
 
 int main()
 {   
     node *root = NULL;
     
-    //primeiro animal
+    //adicionado o primeiro animal:
     strcpy(animal[0].name, "animal_1");
 
-    //caracteristicas do maceico
+    //caracteristicas do animal_1
     char caracteristicas[][15] = {"a1", "a2", "b3", "a4"};
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[0].charac[i], caracteristicas[i]);
     }
     //animal raiz inserido 
     root = insertRoot(root, animal[0].name);
-    //adicionar os proximos animais
+    //mostrando o animal raiz
     printTree(root);
-    //nome filho
-
+    
+    //nome do primeiro filho
     strcpy(animal[1].name,"animal_2");
 
     char caracteristics[][15] = {"a1", "b2", "b3", "b4"};
-    //caracterisitcas filho
+    //caracterisitcas filho sendo inseridas no struct de informaçoes do animal
     for(int i = 0; i < 4 ; i++){
         strcpy(animal[1].charac[i], caracteristics[i]);
     }
-
-    //definicao do pai para usar na insercao dos filhos 
-    //char fatherchar[4][15];
-    //for(int i = 0; i < 4 ; i++){   //counter = animal anterior
-    //    strcpy(fatherchar[i], animal[counter].charac[i]);
-    //}
 
     root = insert(root, animal[1].charac, animal[1].name );
     printf("\n");
@@ -292,15 +290,11 @@ int main()
     printTree(root);
     printf("\n");
 
-    
-    search(root, "Teste");
     printf("\n");
-    int procura = search(root, "animal_4");
-    if (procura == 1)printf("node found\n");
-    else printf("node not found\n");
-    procura = search(root, "animal_8");
-    if (procura == 1)printf("node found\n");
-    else printf("node not found\n");
+    search(root, "animal_4");
+    
+    search(root, "animal_8");
+    
    
 
 }

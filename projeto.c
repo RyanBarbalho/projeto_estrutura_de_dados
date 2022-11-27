@@ -93,26 +93,38 @@ int comparison(int sonList[], int size)
     return aux;
 }
 
-void reorder(node *head, node *newList)
+void reorder(node *root[], node *newList, int number)
 {
     int small = 6;
+    newList = insertAtBeginning(newList, root[0]);
+
+    int distances[number];
+
+    for(int i=0; i< number; i++){
+        distances[i] = root[i]->distancia;
     
-    node *aux = head;
-
-    while (aux != NULL)
-    {
-        if (aux->distancia <= small)
-        {
-            newList = insertAtBeginning(newList, aux);
-        }
-        else{
-            insertAtEnd(newList, aux);
-        }
-        aux = aux->next;
     }
-}   
+    int aux;
 
+    for (int contador = 1; contador < number; contador++) {
+        for (i = 0; i < TAM - 1; i++) {
+            if (distances[i] > distances[i + 1]) {
+                aux = distances[i];
+                distances[i] = distances[i + 1];
+                distances[i + 1] = aux;
+            }  
+        }
+    }
 
+    for(int i = 0; i < number; i++){
+        newList = insertAtBeginning(newList, root[i]); 
+        printf("\n%s\n", newList->name);
+        
+    }
+
+   
+
+}
 int main()
 {
     node *head = NULL;
@@ -192,7 +204,7 @@ int main()
     printf("\n");
 
     node *newList = NULL;
-    reorder(head, newList);
+    reorder(aux, newList, 6);
     print(newList);
 
     return 0;

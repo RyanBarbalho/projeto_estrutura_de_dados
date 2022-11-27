@@ -13,23 +13,26 @@ struct listaEncadeada
 {
     char name[15];
     int distancia;
+    int marked;
     // ponteiro que vai apontar para o proximo node da lista >>
     struct listaEncadeada *next;
 };
 typedef struct listaEncadeada node;
 
-void BubbleSort(int vetor[], int tamanho){
-	int aux, i, j;
-	for(j=tamanho-1; j>=1; j--){
-		for(i=0; i<j; i++){
-			if(vetor[i]>vetor[i+1]){
-				aux=vetor[i];
-                    vetor[i]=vetor[i+1];
-                    vetor[i+1]=aux;
+//bubble sort simples
+void bubbleSort(int array[], int size){
+	int aux;    
+	for(int j=size-1; j>=1; j--){
+		for(int i=0; i<j; i++){
+			if(array[i]>array[i+1]){
+				aux=array[i];
+                    array[i]=array[i+1];
+                    array[i+1]=aux;
             }
         }
     }
 }
+
 void print(node *root)
 {
     while (root != NULL)
@@ -39,7 +42,7 @@ void print(node *root)
     }
     printf("\n");
 }
-
+//cria a raiz
 node *createRoot(char animal[])
 {
     // alocar um novo node usando malloc
@@ -47,7 +50,8 @@ node *createRoot(char animal[])
     // o valor do node criado sera o valor fornecido
     strcpy(result->name, animal);
     result->next = NULL;
-    result->distancia = 00;
+    result->distancia = 0;
+    result ->marked = 0;
 
     return result;
 }
@@ -60,12 +64,13 @@ node *createNode(char animal[], int distance)
     strcpy(result->name, animal);
     result->distancia = distance;
     result->next = NULL;
+    result->marked = 0;
 
     return result;
 }
 
 
-
+//insere no começo da lista
 node *insertAtBeginning(node *head, node *insertedNode)
 {   
     if(insertedNode -> distancia != 0){
@@ -75,7 +80,7 @@ node *insertAtBeginning(node *head, node *insertedNode)
     
     return insertedNode;
 }
-
+//insere no final da lista
 void insertAtEnd(node *head, node *insertedNode)
 {
     node *i = head;
@@ -88,6 +93,7 @@ void insertAtEnd(node *head, node *insertedNode)
     insertedNode->next = NULL;
 }
 
+//compara as informaços do node inserido com o animal raiz
 int comparison(int sonList[], int size)
 {
     int aux = 0;
@@ -104,38 +110,40 @@ int comparison(int sonList[], int size)
     return aux;
 }
 
-int reorderLoop(node *root[], node* newList, int distances[], int size){
+// reordena a lista
+void reorderLoop(node *root[], node* newList, int distances[], int size){
     for(int i=0 ; i<size ; i++){
-        if(root[i]->distancia == distances[i]) insertAtEnd(newList, root[i]);
+        for(int j = 0 ; i < size; j++){
+            if((root[j]->distancia == distances[i]) && root[j] -> marked == 0 ){
+                insertAtEnd(newList, root[j]);
+                root[j]->marked = 1;
+                break;
+            }
+        }
     }
 }
-
+//primeiro, insere a raiz, depois cria um array distancias e ordena eles para servirem como parametro da reordenaçao da lista
 void reorder(node *root[], int number)
-{
+{ 
     int small = 6;
     node *newList = NULL;
     newList = insertAtBeginning(newList, root[0]);
     printf("\n");
-    print(newList);
+
 
     int distances[number];
     for(int i=0; i< number; i++){
         distances[i] = root[i]->distancia;
     }
     int aux;
-    printf("\n");
 
-    BubbleSort(distances, number);
+    bubbleSort(distances, number);
 
-    for(int i = 0; i < 6; i++){
-        if(root[i]->distancia == distances[i])
-        newList = insertAtBeginning(newList, root[i]); 
-    }
+    reorderLoop(root, newList, distances, 6);
+    print(newList);
 
 
 }
-
-
 int main()
 {
     node *head = NULL;
@@ -212,8 +220,7 @@ int main()
     printf("\n");
     print(head);
     printf("\n");
-    printf("\n");
-
+    
     reorder(aux, 6);
 
     return 0;

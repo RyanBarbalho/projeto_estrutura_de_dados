@@ -18,13 +18,24 @@ struct listaEncadeada
 };
 typedef struct listaEncadeada node;
 
-void print(node *head)
+void BubbleSort(int vetor[], int tamanho){
+	int aux, i, j;
+	for(j=tamanho-1; j>=1; j--){
+		for(i=0; i<j; i++){
+			if(vetor[i]>vetor[i+1]){
+				aux=vetor[i];
+                    vetor[i]=vetor[i+1];
+                    vetor[i+1]=aux;
+            }
+        }
+    }
+}
+void print(node *root)
 {
-
-    while (head != NULL)
+    while (root != NULL)
     {
-        printf("%s-(distancia:%d)-", head->name, head->distancia);
-        head = head->next;
+        printf("%s-(distancia:%d)-", root->name,root->distancia);
+        root = root->next;
     }
     printf("\n");
 }
@@ -93,38 +104,38 @@ int comparison(int sonList[], int size)
     return aux;
 }
 
-void reorder(node *root[], node *newList, int number)
+int reorderLoop(node *root[], node* newList, int distances[], int size){
+    for(int i=0 ; i<size ; i++){
+        if(root[i]->distancia == distances[i]) insertAtEnd(newList, root[i]);
+    }
+}
+
+void reorder(node *root[], int number)
 {
     int small = 6;
+    node *newList = NULL;
     newList = insertAtBeginning(newList, root[0]);
+    printf("\n");
+    print(newList);
 
     int distances[number];
-
     for(int i=0; i< number; i++){
         distances[i] = root[i]->distancia;
-    
     }
     int aux;
+    printf("\n");
 
-    for (int contador = 1; contador < number; contador++) {
-        for (i = 0; i < TAM - 1; i++) {
-            if (distances[i] > distances[i + 1]) {
-                aux = distances[i];
-                distances[i] = distances[i + 1];
-                distances[i + 1] = aux;
-            }  
-        }
-    }
+    BubbleSort(distances, number);
 
-    for(int i = 0; i < number; i++){
+    for(int i = 0; i < 6; i++){
+        if(root[i]->distancia == distances[i])
         newList = insertAtBeginning(newList, root[i]); 
-        printf("\n%s\n", newList->name);
-        
     }
 
-   
 
 }
+
+
 int main()
 {
     node *head = NULL;
@@ -203,9 +214,7 @@ int main()
     printf("\n");
     printf("\n");
 
-    node *newList = NULL;
-    reorder(aux, newList, 6);
-    print(newList);
+    reorder(aux, 6);
 
     return 0;
 }

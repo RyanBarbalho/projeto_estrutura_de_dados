@@ -34,6 +34,7 @@ typedef struct row{
 
 
 
+
 void printTree(node *root)
 {
     if(root != NULL){

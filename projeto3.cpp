@@ -5,12 +5,18 @@
 #include<graphics.h>
 #include<conio.h>
 
+#define LEFT 1
+#define RIGHT 2
 int ind = 0;
+int count =0;
+int position = 3;
 
 typedef struct tree
 {
     char data[15];
     int count;
+    int x;
+    int y;
     struct tree *left;
     struct tree *right;
 
@@ -47,6 +53,7 @@ int comparison(int resembles , char fatherList[][15], char sonList[][15], int si
             
         }
     }
+    
     return resembles;
 
 }
@@ -59,9 +66,13 @@ node *insertRoot(node *root, char name[]){
         root -> left = NULL;
         root -> right = NULL;
         //debug
-        
+        root->x = 320;
+        root->y = 50;
         root -> count = ind;
         ind++;
+        //desenha o node
+        circle(root->x, root->y, 28);
+        outtextxy(root->x-20, root-> y-10, name);
 
         return root;
     } 
@@ -70,8 +81,8 @@ node *insertRoot(node *root, char name[]){
 }
 
 // tirar o father char ->> tiramo                  
-node *insert(node *root, char sonchar[][15], char name[]){
-
+node *insert(node *root,char sonchar[][15], char name[], int X, int Y, int fatherx, int fathery, int level){
+    
     if (root == NULL){
         //espaço eh alocado
         root = (struct tree*)malloc(sizeof(node));
@@ -79,9 +90,18 @@ node *insert(node *root, char sonchar[][15], char name[]){
         strcpy(root->data, name);
         root -> left = NULL;
         root -> right = NULL;
+        root->x = X;
+        root->y = Y;
+
+        circle(root->x, root->y, 28);
+        outtextxy(root->x-20, root-> y-10, name);
+        
+        line(X, Y, fatherx, fathery);
         
         root -> count = ind;
         ind++;
+
+        //desenha o node
         
     }
     else{
@@ -99,14 +119,38 @@ node *insert(node *root, char sonchar[][15], char name[]){
         if(resemblance == 0){
             printf("animal %s nao valido\n", name);
             
-        }
+        }//esquerda
         else if(resemblance<=2){
-              
-            root->left = insert(root->left, sonchar, name);
-        }
+            //atualiza coordenada do filho
+            int newx;
+            int newy; 
+            if(level%2==0){
+                newx = root->x-100;
+                newy = root->y+60;
+
+            }
+            else{
+                newx = root->x-60;
+                newy = root->y+70;
+            }
+            
+            root->left = insert(root->left, sonchar, name, newx, newy, root->x, root->y,level+1);
+        }//direita
         else if(resemblance>2){
-                    
-            root->right = insert(root->right, sonchar, name);
+            //atualiza coordenada 
+            int newx;
+            int newy;
+            if(level%2==0){
+                newx = root->x+90;
+                newy = root->y+60;
+
+            }
+            else{
+                newx = root->x+50;
+                newy = root->y+70;
+            }
+            
+            root->right = insert(root->right, sonchar, name, newx, newy, root->x, root->y, level+1);
         }
 
     }
@@ -125,76 +169,61 @@ size ++;
 return size;
 }
 
-int main()
+int main(int argc, char const *argv[])
 {   
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, (char*)"");
+
+    int index = 0;
+    int op = 4;
+    // char lookNode[15];
+
+    // cria a arvore
     node *root = NULL;
-    
-    //adicionado o primeiro animal:
-    strcpy(animal[0].name, "animal_1");
+    //     //adicionado o primeiro animal:
+    printf("\ndigite o primeiro animal:\n");
+    scanf("%s", animal[0].name);
+    printf("digite 4 caracteristicas do animal:");
 
-    //caracteristicas do animal_1
-    char caracteristicas[][15] = {"a1", "a2", "b3", "a4"};
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[0].charac[i], caracteristicas[i]);
+    for (int i = 0; i < 4; i++)
+    {
+        scanf("%s", animal[0].charac[i]);
     }
-    //animal raiz inserido 
+    // animal raiz inserido
     root = insertRoot(root, animal[0].name);
-    //mostrando o animal raiz
-    printTree(root);
-    
-    //nome do primeiro filho
-    strcpy(animal[1].name,"animal_2");
-
-    char caracteristics[][15] = {"a1", "b2", "b3", "b4"};
-    //caracterisitcas filho sendo inseridas no struct de informaçoes do animal
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[1].charac[i], caracteristics[i]);
-    }
-
-    root = insert(root, animal[1].charac, animal[1].name );
-    printf("\n");
-    printTree(root);
-    strcpy(animal[2].name,"animal_3");
-
-    char caracteristicos[][15] = {"a1", "b2", "c3", "b4"};
-    //caracterisitcas filho
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[2].charac[i], caracteristicos[i]);
-    }
-    root = insert(root, animal[2].charac, animal[2].name);
+    // mostrando o animal raiz
     printTree(root);
 
-    strcpy(animal[3].name,"animal_4");
+    while (op != 0)
+    {
 
-    char caracteristicis[][15] = {"a1", "c2", "c3", "b4"};
-    //caracterisitcas filho
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[3].charac[i], caracteristicis[i]);
-    }
-    root = insert(root, animal[3].charac, animal[3].name);
+        printf("\ndigite\n\t1 para adicionar um animal a arvore\n\t0 para sair\n:");
+        scanf("%d", &op);
+        switch (op)
+        {
 
+            case 0:
+                break;
+
+            case 1:
+                index++;
+                printf("digite seu animal :");
+                scanf("%s", animal[index].name);
+                printf("digite 4 caracteristicas do animal:");
+                for (int i = 0; i < 4; i++)
+                {
+                    scanf("%s", animal[index].charac[i]);
+                }
+                root = insert(root, animal[index].charac, animal[index].name,0,0,0,0,0);
+
+                break;
+            case 2:
+                printTree(root);
+                break;
+        }
+        
    
-    strcpy(animal[4].name,"animal_5");
-
-    char caracteristices[][15] = {"a1", "a2", "b3", "b4"};
-    //caracterisitcas filho
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[4].charac[i], caracteristices[i]);
-    }
-    root = insert(root, animal[4].charac, animal[4].name);
-    printf("\n");
-
-    strcpy(animal[5].name,"animal_6");
-
-    char caracteristiczs[][15] = {"a1", "c2", "c3", "c4"};
-    //caracterisitcas filho
-    for(int i = 0; i < 4 ; i++){
-        strcpy(animal[5].charac[i], caracteristices[i]);
-    }
-    root = insert(root, animal[5].charac, animal[5].name);
-    printf("\n");
-    printTree(root);
-    printf("\n");
-   
+    getch();
+    closegraph();
 
 }

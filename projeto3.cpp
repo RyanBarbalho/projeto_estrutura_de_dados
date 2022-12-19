@@ -47,7 +47,6 @@ int comparison(int resembles , char fatherList[][15], char sonList[][15], int si
             
         }
     }
-    
     return resembles;
 
 }

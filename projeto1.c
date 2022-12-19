@@ -77,7 +77,6 @@ node *insertAtBeginning(node *head, node *insertedNode)
         insertedNode->next = head;
         head = insertedNode;
     }
-    
     return insertedNode;
 }
 //insere no final da lista

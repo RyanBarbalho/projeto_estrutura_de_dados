@@ -11,25 +11,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QBrush, QPen
 from PyQt5.QtWidgets import *
+import os
 
 ind = 0
 #os nodes terao tamanho de 61x61 e coordenada inicial 580x10
-
-class draw(QWidget):
-    def __init__(self, X,Y, name):
-        super(draw, self).__init__()
-        self.x = X
-        self.y = Y
-        self.name = name
-        self.paintEvent(X,Y,name)
-
-    def paintEvent(self,event,X,Y,name):
-        qp = QPainter()
-        qp.setPen(QPen(Qt.blue, 8, Qt.SolidLine))
-        qp.drawEllipse(61,61,X,Y)
-        qp.setFont(QtGui.QFont('Arial', 20))
-        qp.setPen(QtGui.QColor(0,0,0))
-        qp.drawText(X,Y, name)
 
 
 class Node:
@@ -41,7 +26,6 @@ class Node:
         self.left = None
         self.right = None
         
-
         
 def comparison(fatherlist, sonlist, size):
     resembles = 0
@@ -51,54 +35,7 @@ def comparison(fatherlist, sonlist, size):
 
     return resembles
 
-def insert(root, LISTA , sonchar, value,X,Y,fatherx,fathery,level):
-    global ind
-     
-    if not root:
-        newnode = Node(value,ind,X,Y)
-        root = newnode
-        ind += 1
-        circle = draw(X,Y,value)
-    else:
-        fatherchar = []
 
-        index = root.count
-        for i in range (4):
-            fatherchar.append(LISTA[index].charac[i])
-        #chamar funcao semelhanca
-        resemblance = comparison(fatherchar, sonchar, 4)
-
-        if resemblance <= 2: 
-            if root.left == None:
-                newnode = Node(value,ind,X,Y)
-                root.left = newnode
-                ind += 1
-
-
-            else:
-                #atualizar as coordenadas
-                if(level%2==0):
-                    newx = root.x-100
-                    newy = root.y+60
-                else:
-                    newx = root.x-60
-                    newy = root.y+70
-                insert(root.left, LISTA, sonchar, value,newx,newy,root.x,root.y,level+1)
-        elif resemblance > 2:
-            
-            if root.right == None:
-                newnode = Node(value,ind,X,Y)
-                root.right = newnode
-                ind += 1   
-            else:#atualizar as coordenadas
-                if(level%2==0):
-                    newx = root.x+90
-                    newy = root.y+60
-                else:
-                    newx = root.x+50
-                    newy = root.y+70
-                insert(root.right, LISTA, sonchar, value,newx,newy,root.x,root.y,level+1)
-                
 #print inOrder
 def printTree(root):
         if root.left:
@@ -114,8 +51,17 @@ class lista:
 #criar lista         
 LISTA = []
 
+class Ui_MainWindow(QtWidgets.QWidget):
 
-class Ui_MainWindow(object):
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setPen(QPen(Qt.black, 12, Qt.SolidLine))
+        painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
+        painter.drawEllipse(100, 100, 400, 200)
+
+        
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 700)
@@ -148,8 +94,10 @@ class Ui_MainWindow(object):
         self.lineEdit_6 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_6.setGeometry(QtCore.QRect(10, 120, 161, 20))
         self.lineEdit_6.setObjectName("lineEdit_6")
+
         #botao 1 eh clicado
         self.pushButton.clicked.connect(self.insertNode)
+        self.pushButton_2.clicked.connect(self.searchNode)
 
 
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
@@ -170,30 +118,35 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def paintEvent(self, event, x, y):
-        painter = QPainter(self)
-        painter.setPen(QPen(Qt.green, 8, Qt.SolidLine))
-        painter.drawEllipse(61,61,x,y)
-
+    
     def insertNode(self):
         global ind
         name = self.lineEdit.text()
+        
         caracteristica1 = self.lineEdit_3.text()
         caracteristica2 = self.lineEdit_4.text()
         caracteristica3 = self.lineEdit_5.text()
         caracteristica4 = self.lineEdit_6.text()
         object = lista(name, caracteristica1, caracteristica2, caracteristica3, caracteristica4)
         LISTA.append(object)
-
         if ind == 0:
-            tree = Node(name,ind)
-            tree.x = 580
-            tree.y = 10
-            ind+=1
-            circle = draw(580,10,name)
+            
+            with open('entry.txt', 'a+') as file:
+                file.write(LISTA[ind].name + "\n" + LISTA[ind].charac[0] + "\n" + LISTA[ind].charac[1] + "\n" + LISTA[ind].charac[2] + "\n" + LISTA[ind].charac[3] + "\n")
+            ind+=1  
         else:
-            insert(tree, LISTA, LISTA[ind].charac, name,0,0,0,0,0)
-        printTree(tree)
+
+            with open('entry.txt', 'a+') as file:
+                file.write(str(1) + "\n" +LISTA[ind].name + "\n" + LISTA[ind].charac[0] + "\n" + LISTA[ind].charac[1] + "\n" + LISTA[ind].charac[2] + "\n" + LISTA[ind].charac[3] + "\n")
+            ind+=1      
+        os.system('C:/TDM-GCC-32/bin/g++.exe -fdiagnostics-color=always -g "D:\estrutura de dados\graphicsProgram\projeto3.cpp" -o "D:\estrutura de dados\graphicsProgram\projeto3.exe" -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -lole32 && "D:\estrutura de dados\graphicsProgram\projeto3.exe"')
+        
+    def searchNode(self):
+        global ind
+        name = self.lineEdit_2.text()
+        
+    
+        
 
     
 
